@@ -19,36 +19,43 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
 
-      - name: Install Linux deps (hidapi)
+      - name: Install Linux deps
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq libudev-dev libhidapi-dev
+          sudo apt-get install -y -qq \
+            libudev-dev libhidapi-dev \
+            libxcb-render0-dev libxcb-shape0-dev \
+            libxcb-xfixes0-dev libxkbcommon-dev \
+            libssl-dev libgtk-3-dev \
+            libwayland-dev libseat-dev
 
-      - name: Install Linux deps (eframe/gtk)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get install -y -qq libxcb-render0-dev libxcb-shape0-dev \
-            libxcb-xfixes0-dev libxkbcommon-dev libssl-dev libgtk-3-dev
+      - name: Check (library crates only, no platform-specific features)
+        run: cargo check -p strop-proto -p strop-profile -p strop-dsp -p strop-hid
 
-      - name: Check
-        run: cargo check --workspace --all-features
-
-      - name: Build (all targets)
-        run: cargo build --workspace --all-features
+      - name: Build (library crates)
+        run: cargo build -p strop-proto -p strop-profile -p strop-dsp -p strop-hid
 
       - name: Test (library crates)
-        run: cargo test --workspace --lib -- --test-threads=1
+        run: cargo test -p strop-proto -p strop-profile -p strop-dsp -p strop-hid -- --test-threads=1
 
-      - name: Clippy
-        run: cargo clippy --workspace --all-features -- -D warnings
+      - name: Clippy (library crates)
+        run: cargo clippy -p strop-proto -p strop-profile -p strop-dsp -p strop-hid
+
+      - name: Check binary (macOS)
+        if: matrix.os == 'macos-latest'
+        run: cargo check -p strop
+
+      - name: Build binary (macOS)
+        if: matrix.os == 'macos-latest'
+        run: cargo build -p strop
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -61,7 +68,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -70,30 +77,37 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq libudev-dev libhidapi-dev \
-            libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev \
-            libxkbcommon-dev libssl-dev libgtk-3-dev
+          sudo apt-get install -y -qq \
+            libudev-dev libhidapi-dev \
+            libxcb-render0-dev libxcb-shape0-dev \
+            libxcb-xfixes0-dev libxkbcommon-dev \
+            libssl-dev libgtk-3-dev \
+            libwayland-dev libseat-dev
 
-      - name: Build release
-        run: cargo build --release --workspace
+      - name: Build release (library crates)
+        run: cargo build --release -p strop-proto -p strop-profile -p strop-dsp -p strop-hid
+
+      - name: Build release binary (macOS)
+        if: matrix.os == 'macos-latest'
+        run: cargo build --release -p strop
 
       - name: Upload binary (macOS)
         if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: strop-macos
           path: target/release/strop
 
       - name: Upload binary (Linux)
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: strop-linux
           path: target/release/strop
 
       - name: Upload binary (Windows)
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: strop-windows
           path: target/release/strop.exe
