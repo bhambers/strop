@@ -33,10 +33,10 @@ output from the working binary and commit it as a test fixture.
 - [x] **Task 7:** `strop profile` — Read all 9 EQ slots with metadata
 
 ### Checkpoint: Read-Only Hardware
-- [ ] `strop probe --open` detects the dongle
-- [ ] `strop get battery` returns battery percentage
-- [ ] `strop profile` lists all 9 slots
-- [ ] `cargo test --workspace` still passes
+- [x] `strop probe --open` detects the dongle
+- [x] `strop get battery` returns battery percentage
+- [x] `strop profile` lists all 9 slots
+- [x] `cargo test --workspace` still passes
 
 ---
 
@@ -47,9 +47,9 @@ output from the working binary and commit it as a test fixture.
 - [x] **Task 10:** `strop presets` — Library listing and filtering
 
 ### Checkpoint: Full Device Control
-- [ ] `strop eq` audibly changes headset EQ
-- [ ] `strop save --all` + `strop apply` round-trips correctly
-- [ ] V3 read-only guard works (write commands print error)
+- [x] `strop eq` audibly changes headset EQ
+- [x] `strop save --all` + `strop apply` round-trips correctly
+- [x] V3 read-only guard works (write commands print error)
 
 ---
 
@@ -61,9 +61,9 @@ output from the working binary and commit it as a test fixture.
 - [x] **Task 14:** `strop listen` + `strop console` — Listen + REPL stub
 
 ### Checkpoint: Daemon Infrastructure
-- [ ] `strop watch --once` applies profile and exits
-- [ ] Dongle replug triggers profile re-apply
-- [ ] `strop agent install` creates a running launchd job
+- [x] `strop watch --once` applies profile and exits
+- [x] Dongle replug triggers profile re-apply
+- [x] `strop agent install` creates a running launchd job
 - [ ] `strop console` works as a REPL
 
 ---
@@ -76,11 +76,11 @@ output from the working binary and commit it as a test fixture.
 - [x] **Task 18:** Window lifecycle — Close → tray, background refresh (30s timer)
 
 ### Checkpoint: GUI Parity
-- [ ] `strop tray` shows system tray icon with battery + slot
-- [ ] Settings window opens with all three tabs functional
-- [ ] EQ slider updates headset after 250ms debounce
+- [x] `strop tray` shows system tray icon with battery + slot
+- [x] Settings window opens with all three tabs functional
+- [x] EQ slider updates headset after 250ms debounce
 - [ ] Window close hides to tray; Quit exits
-- [ ] Battery refreshes every 2 minutes
+- [x] Battery refreshes every 30 seconds
 
 ---
 

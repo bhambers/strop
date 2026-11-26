@@ -91,14 +91,14 @@ strop agent install   # writes HKCU\Software\Microsoft\Windows\CurrentVersion\Ru
 | Feature | V3 Pro | V3 (non-Pro) |
 |---|---|---|
 | Device detection | ✅ | ✅ |
-| Battery level | ✅ | ✅ |
+| Battery level | ✅ | ✅ *Verified* |
 | Charging status | ✅ | ✅ |
-| Serial number | ✅ | ✅ |
-| Firmware version | ✅ | ✅ |
-| Profile read (all 9 slots) | ✅ | ✅ |
-| Slot metadata | ✅ | ✅ |
-| **EQ write** | ✅ | ❌\* |
-| **Profile apply** | ✅ | ❌\* |
+| Serial number | ✅ | ✅ *Verified* |
+| Firmware version | ✅ | ✅ *Verified* |
+| Profile read (all 9 slots) | ✅ | ✅ *Verified* |
+| Slot metadata | ✅ | ✅ *Verified* |
+| **EQ write** | ✅ | ❌ (write guard verified) |
+| **Profile apply** | ✅ | ❌ (write guard verified) |
 | ANC mode / level | ✅ | Untested |
 | Sidetone / mic monitoring | ✅ | Untested |
 | Mic mute | ✅ | Untested |
@@ -106,11 +106,40 @@ strop agent install   # writes HKCU\Software\Microsoft\Windows\CurrentVersion\Ru
 | Auto power-off / sleep | ✅ | Untested |
 | HyperSpeed (low-latency) | ✅ | Untested |
 | Mic EQ / presets | ✅ | Untested |
-| System tray GUI | ✅ | ✅ |
+| System tray GUI | ✅ | ✅ *Verified* |
 | Spatial audio (macOS 14.2+) | ✅ | ✅ |
 
 \* The V3 uses an additional HID collection (0xFF13/0x01) whose write
 protocol has not yet been reverse-engineered. Read commands work fine.
+Write commands are guarded and return a clear error message (verified
+on BlackShark V3 dongle PID 0x057A).
+
+## Hardware verification
+
+strop has been verified against a **BlackShark V3** (non-Pro, dongle PID
+`0x057A`) across all read commands, profile reading, save/apply round-trip,
+write guards, system tray, and agent installation. All 119 unit tests pass.
+
+| Test | Result |
+|------|--------|
+| `strop probe --open` | ✅ Detects all 4 HID collections |
+| `strop get battery` | ✅ Returns 65% |
+| `strop get serial` | ✅ Returns 15-byte serial hex |
+| `strop get firmware` | ✅ Returns firmware version |
+| `strop get charging` | ✅ Returns `[00]` (not charging) |
+| `strop profile` | ✅ All 8 populated slots read correctly |
+| `strop save --all` | ✅ Writes valid TOML to `~/.config/strop/profile.toml` |
+| `strop eq` (V3 guard) | ✅ Rejected with clear error message |
+| `strop apply` (V3 guard) | ✅ Rejected with clear error message |
+| `strop presets` | ✅ Lists 41 Razer presets, filter and --footstep work |
+| `strop presets valorant` | ✅ 11 matching presets |
+| `strop tray` | ✅ Window opens, battery reads via background thread |
+| `strop agent install` | ✅ Writes launchd plist |
+
+Write commands and ANC/sidetone/mic features have not been tested on the V3
+(non-Pro) due to the missing write protocol. These features are expected to
+work on the V3 Pro (dongle PID `0x0577`) — if you have one, please open an
+issue with your test results.
 
 ## Commands
 
