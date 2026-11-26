@@ -975,7 +975,7 @@ mod tests {
         assert_eq!(msg.args, vec![5]);
 
         // Encode it.
-        let encoded = msg.encode().expect("encode");
+        let _encoded = msg.encode().expect("encode");
 
         // Simulate a device reply: same command, status SUCCESS, 11 args.
         // Build a reply payload that decode() will accept.

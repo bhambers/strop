@@ -109,14 +109,14 @@ pub fn default_path() -> Result<PathBuf, String> {
 }
 
 fn home_dir() -> Option<PathBuf> {
-    #[cfg(target_os = "macos")]
+    // XDG_CONFIG_HOME already checked; fall back to HOME or USERPROFILE.
+    #[cfg(not(target_os = "windows"))]
     {
-        // On macOS, std::env::var("HOME") is reliable.
         std::env::var("HOME").ok().map(PathBuf::from)
     }
-    #[cfg(not(target_os = "macos"))]
+    #[cfg(target_os = "windows")]
     {
-        std::env::var("HOME").ok().map(PathBuf::from)
+        std::env::var("USERPROFILE").ok().map(PathBuf::from)
     }
 }
 
@@ -258,8 +258,17 @@ mod tests {
 
     #[test]
     fn default_path_falls_back_to_home_config() {
-        let key = "XDG_CONFIG_HOME";
-        std::env::remove_var(key);
+        let xdg_key = "XDG_CONFIG_HOME";
+        std::env::remove_var(xdg_key);
+
+        // Ensure a home directory exists for the platform.
+        let home_key = if cfg!(target_os = "windows") { "USERPROFILE" } else { "HOME" };
+        let home_val = std::env::var(home_key).ok();
+        if home_val.is_none() {
+            // CI runner may not have HOME set; set a temp one.
+            std::env::set_var(home_key, "/tmp/fake-home");
+        }
+
         let got = default_path().expect("default path");
         let s = got.to_string_lossy();
         assert!(s.contains(".config/strop/profile.toml"), "unexpected path: {s}");
