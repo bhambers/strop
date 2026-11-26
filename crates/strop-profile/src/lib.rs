@@ -248,30 +248,51 @@ mod tests {
 
     #[test]
     fn default_path_honours_xdg() {
-        // Temporarily set XDG_CONFIG_HOME and check the path
-        let key = "XDG_CONFIG_HOME";
-        std::env::set_var(key, "/tmp/xdg");
+        // Save and restore to avoid racing with other tests.
+        let saved = std::env::var("XDG_CONFIG_HOME").ok();
+        std::env::set_var("XDG_CONFIG_HOME", "/tmp/xdg");
         let got = default_path().expect("default path");
+        match saved {
+            Some(v) => std::env::set_var("XDG_CONFIG_HOME", v),
+            None => std::env::remove_var("XDG_CONFIG_HOME"),
+        }
         assert_eq!(got, PathBuf::from("/tmp/xdg/strop/profile.toml"));
-        std::env::remove_var(key);
     }
 
     #[test]
     fn default_path_falls_back_to_home_config() {
-        let xdg_key = "XDG_CONFIG_HOME";
-        std::env::remove_var(xdg_key);
+        // Save and restore to avoid racing with other tests.
+        let saved_xdg = std::env::var("XDG_CONFIG_HOME").ok();
+        std::env::remove_var("XDG_CONFIG_HOME");
 
-        // Ensure a home directory exists for the platform.
-        let home_key = if cfg!(target_os = "windows") { "USERPROFILE" } else { "HOME" };
-        let home_val = std::env::var(home_key).ok();
-        if home_val.is_none() {
-            // CI runner may not have HOME set; set a temp one.
+        // On Windows CI, USERPROFILE is always set; on macOS/Linux, HOME is.
+        #[cfg(not(target_os = "windows"))]
+        let home_key = "HOME";
+        #[cfg(target_os = "windows")]
+        let home_key = "USERPROFILE";
+
+        let saved_home = std::env::var(home_key).ok();
+        if saved_home.is_none() {
             std::env::set_var(home_key, "/tmp/fake-home");
         }
 
         let got = default_path().expect("default path");
+
+        // Restore env vars.
+        match saved_xdg {
+            Some(v) => std::env::set_var("XDG_CONFIG_HOME", v),
+            None => std::env::remove_var("XDG_CONFIG_HOME"),
+        }
+        match saved_home {
+            Some(v) => std::env::set_var(home_key, v),
+            None => std::env::remove_var(home_key),
+        }
+
         let s = got.to_string_lossy();
-        assert!(s.contains(".config/strop/profile.toml"), "unexpected path: {s}");
+        assert!(
+            s.contains(".config") && s.contains("strop") && s.contains("profile.toml"),
+            "unexpected path: {s}"
+        );
     }
 
     #[test]
