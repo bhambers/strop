@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - name: Install Linux deps (hidapi)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libudev-dev libhidapi-dev
+
+      - name: Install Linux deps (eframe/gtk)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get install -y -qq libxcb-render0-dev libxcb-shape0-dev \
+            libxcb-xfixes0-dev libxkbcommon-dev libssl-dev libgtk-3-dev
+
+      - name: Check
+        run: cargo check --workspace --all-features
+
+      - name: Build (all targets)
+        run: cargo build --workspace --all-features
+
+      - name: Test (library crates)
+        run: cargo test --workspace --lib -- --test-threads=1
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-features -- -D warnings
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [test]
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Linux deps
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libudev-dev libhidapi-dev \
+            libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev \
+            libxkbcommon-dev libssl-dev libgtk-3-dev
+
+      - name: Build release
+        run: cargo build --release --workspace
+
+      - name: Upload binary (macOS)
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: strop-macos
+          path: target/release/strop
+
+      - name: Upload binary (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: strop-linux
+          path: target/release/strop
+
+      - name: Upload binary (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: strop-windows
+          path: target/release/strop.exe
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            target/release/strop
+            target/release/strop.exe
+          generate_release_notes: true

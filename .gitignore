@@ -1,0 +1,20 @@
+# Rust build artifacts
+/target/
+
+# macOS
+.DS_Store
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Agent skills (installed per-session, not project files)
+.agents/
+.skills/
+
+# Legacy reference code (kept as reference, not built)
+/legacy

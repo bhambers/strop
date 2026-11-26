@@ -1,0 +1,31 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/strop-proto",
+    "crates/strop-profile",
+    "crates/strop-hid",
+    "crates/strop-dsp",
+    "audio-backends/coreaudio",
+]
+
+[package]
+name = "strop"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+strop-proto = { path = "crates/strop-proto" }
+strop-hid = { path = "crates/strop-hid" }
+strop-profile = { path = "crates/strop-profile" }
+strop-dsp = { path = "crates/strop-dsp" }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+strop-coreaudio = { path = "audio-backends/coreaudio" }
+clap = { version = "4", features = ["derive"] }
+tray-icon = "0.20"
+muda = "0.16"
+eframe = "0.31"
+egui = "0.31"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+winreg = "0.52"

@@ -1,0 +1,13 @@
+[package]
+name = "strop-coreaudio"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "CoreAudio process tap backend for strop spatial audio"
+
+[dependencies]
+strop-dsp = { path = "../../crates/strop-dsp" }
+
+[dependencies.coreaudio]
+version = "0.6"
+features = ["process-tap"]

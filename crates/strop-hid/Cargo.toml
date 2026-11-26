@@ -1,0 +1,10 @@
+[package]
+name = "strop-hid"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Cross-platform HID abstraction for Razer BlackShark headset control"
+
+[dependencies]
+strop-proto = { path = "../strop-proto" }
+hidapi = "2"
