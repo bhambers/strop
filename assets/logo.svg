@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 130">
+  <defs>
+    <linearGradient id="stropGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4a3728"/>
+      <stop offset="50%" stop-color="#7a5c44"/>
+      <stop offset="100%" stop-color="#3d2b1f"/>
+    </linearGradient>
+    <linearGradient id="bladeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#999"/>
+      <stop offset="50%" stop-color="#eee"/>
+      <stop offset="100%" stop-color="#666"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Strop hanging vertical strip -->
+  <rect x="30" y="15" width="10" height="95" rx="3" fill="url(#stropGrad)" stroke="#2a1a0f" stroke-width="1"/>
+  <circle cx="35" cy="19" r="3.5" fill="#8b7355" stroke="#5c4a33" stroke-width="0.5"/>
+
+  <!-- Razor blade -->
+  <path d="M28 60 L60 30 L63 33 L33 65 Z" fill="url(#bladeGrad)" stroke="#555" stroke-width="1"/>
+  <rect x="16" y="68" width="16" height="7" rx="2" fill="#2c1810" stroke="#1a0e08" stroke-width="0.5"/>
+
+  <!-- Headphone arc -->
+  <path d="M82 38 Q130 10 172 38" fill="none" stroke="#7a5c44" stroke-width="2.5" stroke-linecap="round"/>
+  <rect x="74" y="33" width="10" height="14" rx="3.5" fill="#7a5c44" stroke="#4a3728" stroke-width="1"/>
+  <rect x="168" y="33" width="10" height="14" rx="3.5" fill="#7a5c44" stroke="#4a3728" stroke-width="1"/>
+
+  <text x="205" y="76" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="48" font-weight="700" fill="#e0d5c8" letter-spacing="0.5">strop</text>
+  <text x="205" y="100" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11" fill="#8b7355" letter-spacing="3">SHARPEN YOUR SOUND</text>
+  <text x="205" y="115" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="8" fill="#5c4a33" letter-spacing="1.5">RAZER HEADSET CONTROL</text>
+</svg>

@@ -1,5 +1,10 @@
 # strop
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/logo.svg">
+  <img alt="strop — sharpen your sound" src="assets/logo.svg" width="480">
+</picture>
+
 > Razer BlackShark V3 Pro / V3 headset control — native, cross-platform, no Synapse.
 
 Synapse for macOS does not support headsets. strop talks to the dongle's
