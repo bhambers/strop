@@ -263,22 +263,6 @@ from usage page `0xFF00` to `0xFF14` and shifted command IDs.
 Every SET command follows the rule `set = get | 0x80`, confirmed from
 Synapse 4 USB captures (module `AudioDevice-0.0.340`).
 
-## Comparison with occam (legacy)
-
-| Aspect | occam (Go) | strop (Rust) |
-|---|---|---|
-| Language | Go + cgo | Rust |
-| macOS HID | IOKit via cgo | hidapi (cross-platform) |
-| Linux support | ❌ | ✅ |
-| Windows support | ❌ | ✅ |
-| GUI | AppKit (macOS only) | egui/eframe (cross-platform) |
-| System tray | NSStatusItem | tray-icon (cross-platform) |
-| Spatial audio | Raw CoreAudio FFI + shim.m | coreaudio crate (safe Rust) |
-| Installation | Homebrew | cargo install / release binary |
-| DSP | Embedded in occmixer binary | Portable strop-dsp crate |
-| Test coverage | ~30 tests | 119 tests |
-| Code quality | cgo + ObjC shim | Pure Rust, 0 `unsafe` in protocol/HID |
-
 ## License
 
 MIT. See `LICENSE`.
