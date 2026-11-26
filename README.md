@@ -24,7 +24,6 @@ A **strop** is a strip of leather used to sharpen a razor — a fitting name
 for a tool that replaces Razer's own Synapse software, especially on macOS
 where Synapse has no headset support at all.
 
-The original project was called **occam** and had a reputational issue.
 strop is a clean-slate rewrite in Rust with a proper cross-platform
 architecture, a system tray GUI, and spatial audio support.
 
