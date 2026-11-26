@@ -1,8 +1,8 @@
 # strop
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/logo.svg">
-  <img alt="strop — sharpen your sound" src="assets/logo.svg" width="480">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/strop-logo.jpeg">
+  <img alt="strop — sharpen your sound" src="assets/strop-logo.jpeg" width="480">
 </picture>
 
 > Razer BlackShark V3 Pro / V3 headset control — native, cross-platform, no Synapse.
