@@ -77,9 +77,6 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Check release compiles
-        run: cargo check --release -p strop
-
       - name: Install Linux deps
         if: matrix.os == 'ubuntu-latest'
         run: |
@@ -90,6 +87,9 @@ jobs:
             libxcb-xfixes0-dev libxkbcommon-dev \
             libssl-dev libgtk-3-dev \
             libwayland-dev libseat-dev
+
+      - name: Check release compiles
+        run: cargo check --release -p strop
 
       - name: Build release binary (${{ matrix.target }})
         run: cargo build --release --target ${{ matrix.target }} -p strop
