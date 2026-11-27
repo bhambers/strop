@@ -64,7 +64,7 @@ output from the working binary and commit it as a test fixture.
 - [x] `strop watch --once` applies profile and exits
 - [x] Dongle replug triggers profile re-apply
 - [x] `strop agent install` creates a running launchd job
-- [ ] `strop console` works as a REPL
+- [x] `strop console` works as a REPL
 
 ---
 
