@@ -12,7 +12,9 @@
 use clap::Args;
 use strop_hid::{self as hid, Device, RAZER_VID, ALL_PIDS};
 use strop_proto::{self as proto, Eq};
-use std::io::{BufRead, Write};
+use std::io::BufRead;
+#[cfg(unix)]
+use std::io::Write;
 use std::time::Duration;
 
 const TIMEOUT: Duration = Duration::from_secs(3);
@@ -89,10 +91,7 @@ fn run_socket(device: &Device, path: &str) -> Result<(), String> {
 
 #[cfg(not(unix))]
 fn run_socket(_device: &Device, _path: &str) -> Result<(), String> {
-    Err(
-        "socket mode is not supported on this platform; "
-        "use --stdin to drive the REPL from standard input".into()
-    )
+    Err("socket mode is not available on this platform; use --stdin".into())
 }
 
 // ── Stdin mode ───────────────────────────────────────────────────
