@@ -2,9 +2,12 @@
 //!
 //! Opens the HID device once, then reads commands and issues them.
 //! Two modes:
-//!   - **Socket** (default): listens on `/tmp/strop.sock`, accepts one connection,
-//!     runs commands line‑by‑line, sends back results.
+//!   - **Socket** (default, Unix only): listens on `/tmp/strop.sock`, accepts one
+//!     connection, runs commands line‑by‑line, sends back results.
 //!   - **stdin** (`--stdin`): reads commands from stdin, prints to stdout.
+//!
+//! Socket mode needs `std::os::unix::net`, which does not exist on Windows, so it is
+//! compiled in on Unix only; `--stdin` works on every platform.
 
 use clap::Args;
 use strop_hid::{self as hid, Device, RAZER_VID, ALL_PIDS};
@@ -40,6 +43,7 @@ impl ConsoleArgs {
 
 // ── Socket mode ──────────────────────────────────────────────────
 
+#[cfg(unix)]
 fn run_socket(device: &Device, path: &str) -> Result<(), String> {
     // Remove stale socket file
     let _ = std::fs::remove_file(path);
@@ -81,6 +85,14 @@ fn run_socket(device: &Device, path: &str) -> Result<(), String> {
         }
     }
     Ok(())
+}
+
+#[cfg(not(unix))]
+fn run_socket(_device: &Device, _path: &str) -> Result<(), String> {
+    Err(
+        "socket mode is not supported on this platform; "
+        "use --stdin to drive the REPL from standard input".into()
+    )
 }
 
 // ── Stdin mode ───────────────────────────────────────────────────
